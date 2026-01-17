@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="NetworkMonitor.Client/NetworkMonitor.Client.csproj" />
+  <Project Path="NetworkMonitor.Server/NetworkMonitor.Server.csproj" Id="e73aaaf7-e994-445c-bd57-e581dfa44b1a" />
+  <Project Path="NetworkMonitor.Shared/NetworkMonitor.Shared.csproj" />
+</Solution>

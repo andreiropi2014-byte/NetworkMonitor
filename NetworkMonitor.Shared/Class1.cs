@@ -1,0 +1,7 @@
+﻿namespace NetworkMonitor.Shared
+{
+    public class Class1
+    {
+
+    }
+}

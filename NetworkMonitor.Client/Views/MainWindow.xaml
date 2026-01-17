@@ -1,0 +1,118 @@
+﻿<Window x:Class="NetworkMonitor.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:NetworkMonitor.Client.Converters"
+        Title="Network Monitor Client" Height="550" Width="900"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Панель подключения -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="Сервер:" VerticalAlignment="Center"/>
+            <TextBox Width="120" Margin="5 0" Text="{Binding ServerIp}"/>
+
+            <TextBlock Text="Порт:" VerticalAlignment="Center"/>
+            <TextBox Width="60" Margin="5 0" Text="{Binding ServerPort}"/>
+
+            <Button x:Name="ConnectBtn" Content="Подключиться" 
+                    Width="100" Margin="10 0"
+                    Click="Connect_Click"/>
+
+            <Button x:Name="DisconnectBtn" Content="Отключиться" 
+                    Width="100" Margin="10 0"
+                    Click="Disconnect_Click"
+                    IsEnabled="{Binding IsConnected}"
+                    Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <TextBlock Text="{Binding StatusMessage}" 
+                       VerticalAlignment="Center"
+                       Margin="20 0">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="Gray"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <Setter Property="Foreground" Value="Green"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Панель сканирования -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="Сеть (CIDR):" VerticalAlignment="Center"/>
+            <TextBox Width="120" Margin="5 0" Text="{Binding Cidr}"/>
+
+            <Button Content="Сканировать" Width="100" Margin="10 0"
+                    Click="Scan_Click"
+                    IsEnabled="{Binding IsConnected}"/>
+        </StackPanel>
+
+        <!-- Панель мониторинга -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="Интервал мониторинга (сек):" VerticalAlignment="Center"/>
+            <TextBox Width="50" Margin="5 0" Text="{Binding MonitorIntervalSec}"/>
+
+            <Button x:Name="StartMonitoringBtn" Content="Старт мониторинг" 
+                    Width="120" Margin="10 0"
+                    Click="StartMonitoring_Click"
+                    IsEnabled="{Binding IsConnected}"/>
+
+            <Button x:Name="StopMonitoringBtn" Content="Стоп мониторинг" 
+                    Width="120" Margin="10 0"
+                    Click="StopMonitoring_Click"
+                    Visibility="Collapsed"/>
+
+            <CheckBox IsChecked="{Binding IsMonitoring}" 
+                      Content="Мониторинг активен"
+                      VerticalAlignment="Center"
+                      Margin="20 0"
+                      IsEnabled="False"/>
+        </StackPanel>
+
+        <!-- Список устройств -->
+        <DataGrid x:Name="DevicesDataGrid" Grid.Row="3"
+                  ItemsSource="{Binding Devices}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserResizeRows="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="IP адрес" 
+                                    Binding="{Binding IpAddress}" 
+                                    Width="120"/>
+                <DataGridTextColumn Header="Имя хоста" 
+                                    Binding="{Binding HostName}" 
+                                    Width="150"/>
+                <DataGridTextColumn Header="Статус" 
+                                    Binding="{Binding Status}" 
+                                    Width="80"/>
+                <DataGridTextColumn Header="Задержка (мс)" 
+                                    Binding="{Binding LastLatencyMs}" 
+                                    Width="80"/>
+                <DataGridTextColumn Header="Открытые порты" 
+                                    Binding="{Binding OpenPorts}" 
+                                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
